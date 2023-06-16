@@ -1,0 +1,43 @@
+@import "var.scss";
+$nucleon-width: 50px;
+$nucleon-height: 50px;
+$electron-per-layer: 6;
+
+.atom {
+  position: relative;
+  grid-column: 4/5;
+  grid-row: 1/3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .nucleon {
+    position: relative;
+    width: $nucleon-width;
+    height: $nucleon-height;
+    border-radius: 50%;
+
+    h2 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .electron-layer {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid #ffffff;
+  }
+
+  .electron {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: 0 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+}
