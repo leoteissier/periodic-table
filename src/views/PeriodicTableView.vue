@@ -290,6 +290,7 @@ $width-height-cell: 85px;
     text-decoration: none;
     color: #919EAB;
     cursor: pointer;
+    transition: 0.2s ease-in-out;
     &:hover{
       filter: drop-shadow(2px 4px 6px black);
     }
