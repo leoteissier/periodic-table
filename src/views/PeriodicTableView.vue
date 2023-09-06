@@ -195,7 +195,7 @@ export default {
 
     <div class="information" v-if="selectedElement">
       <div class="info1">
-        <h1><router-link :to="`/element/${selectedElement.symbol}`">{{ selectedElement.number }} - {{ selectedElement.name }}</router-link></h1>
+        <h1><router-link :to="`/element/${selectedElement.symbol}`" :element="selectedElement">{{ selectedElement.number }} - {{ selectedElement.name }}</router-link></h1>
         <h2 :style="{
           color: `${getColorByCategory(selectedElement.category)}`, textTransform: 'capitalize',}">{{ selectedElement.category }}</h2>
       </div>
@@ -216,7 +216,7 @@ export default {
 
       <div class="atom">
         <div class="nucleon" :style="{ backgroundColor: `${getColorByCategory(selectedElement.category)}` }">
-          <h2 style="z-index: 999"><router-link :to="`/element/${selectedElement.symbol}`">{{ selectedElement.symbol }}</router-link></h2>
+          <h2 style="z-index: 999"><router-link :to="`/element/${selectedElement.symbol}`" :element="selectedElement">{{ selectedElement.symbol }}</router-link></h2>
         </div>
         <div v-for="(electronCount, layer) in electronConfig"
              :key="layer"
