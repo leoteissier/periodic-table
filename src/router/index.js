@@ -12,7 +12,7 @@ const routes = [
     path: '/element/:symbol',
     name: 'ElementDetails',
     component: ElementDetailsView,
-    props: route => ({ symbol: route.params.symbol })
+    props: true
   }
 ]
 

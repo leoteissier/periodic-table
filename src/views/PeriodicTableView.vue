@@ -23,6 +23,13 @@ export default {
       ],
     }
   },
+  async created() {
+    const elementStore = useElementStore();
+    elementStore.initFromLocalStorage();
+    await elementStore.fetchElements();
+    this.createGrid(elementStore.elements);
+    window.addEventListener('click', this.handleOutsideClick);
+  },
   computed: {
     loading() {
       return useElementStore().loading;
@@ -34,12 +41,6 @@ export default {
     electronConfig() {
       return this.parseElectronConfig(this.selectedElement.electron_configuration);
     },
-  },
-  async mounted() {
-    const elementStore = useElementStore();
-    await elementStore.fetchElements();
-    this.createGrid(elementStore.elements);
-    window.addEventListener('click', this.handleOutsideClick);
   },
   methods: {
     createGrid(elements) {
@@ -101,6 +102,10 @@ export default {
     selectElement(element) {
       this.selectedElement = element;
       this.selectedCategory = element.category;
+
+      const elementStore = useElementStore();
+      elementStore.selectedElement = element;
+      elementStore.saveToLocalStorage();
       this.$nextTick(() => {
         this.animateElectrons(this.electronConfig);
       });
@@ -195,7 +200,7 @@ export default {
 
     <div class="information" v-if="selectedElement">
       <div class="info1">
-        <h1><router-link :to="`/element/${selectedElement.symbol}`" :element="selectedElement">{{ selectedElement.number }} - {{ selectedElement.name }}</router-link></h1>
+        <h1><router-link :to="{ name: 'ElementDetails', params: { symbol: selectedElement.symbol }, props: { selectedElement: selectedElement } }">{{ selectedElement.number }} - {{ selectedElement.name }}</router-link></h1>
         <h2 :style="{
           color: `${getColorByCategory(selectedElement.category)}`, textTransform: 'capitalize',}">{{ selectedElement.category }}</h2>
       </div>

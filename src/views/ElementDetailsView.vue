@@ -1,20 +1,28 @@
 <script>
+import { useElementStore } from '@/stores/index.js';
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 export default {
   name: 'ElementDetailsView',
-  props: {
-    element: {
-      type: Object,
-      required: true
-    }
-  },
   mounted() {
     this.loadModel()
-    console.log('element', this.element)
   },
+  computed: {
+    selectedElement() {
+      // Récupérer l'élément depuis le localStorage et le parser
+      const storedElement = JSON.parse(localStorage.getItem('selectedElement'));
+
+      // Vous pouvez également récupérer l'élément du store si vous préférez
+      const elementStore = useElementStore();
+      const selectedElement = elementStore.selectedElement;
+
+      // Utilisez l'élément du localStorage s'il est défini, sinon utilisez celui du store
+      return storedElement || selectedElement;
+    },
+  },
+
   methods: {
     loadModel() {
       const container = document.getElementById('model-container')
@@ -26,9 +34,24 @@ export default {
       container.appendChild(renderer.domElement);
 
       const loader = new GLTFLoader()
-      loader.load(this.element.bohr_model_3d, gltf => {
+      loader.load(this.selectedElement.bohr_model_3d, gltf => {
         const model = gltf.scene;
-        model.scale.set(10, 10, 10); // Changer la taille du modèle
+
+        // Cherchez l'objet "Armature" dans le modèle
+        const armature = model.getObjectByName('Armature');
+
+        if (armature) {
+          // Si "Armature" existe, vous pouvez accéder à l'animation à partir de là
+          const animationClip = armature.animations.find(animation => animation.name === 'Animation');
+
+          if (animationClip) {
+            const mixer = new THREE.AnimationMixer(armature);
+            const action = mixer.clipAction(animationClip);
+            action.play();
+          }
+        }
+
+        model.scale.set(10, 10, 10);
         scene.add(model);
 
         const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -38,6 +61,8 @@ export default {
         model.rotation.x = 0.5; // Appliquer l'inclinaison sur l'axe X
         renderer.render(scene, camera);
       });
+
+
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.enableZoom = false // Désactiver le zoom
       controls.autoRotate = true // Faire tourner le modèle automatiquement
@@ -58,13 +83,12 @@ export default {
 
 <template>
   <div class="more-info">
-    <div>
-      <h1>{{ element }}</h1>
+<!--    <div>-->
 <!--      <p>{{ element.symbol }}</p>-->
 <!--      <p>{{ element.number }}</p>-->
 <!--      <p>{{ element.atomic_mass }}</p>-->
 <!--      <p>{{ element.category }}</p>-->
-    </div>
+<!--    </div>-->
 <!--    <div>-->
 <!--      <p>{{ element.boil }}</p>-->
 <!--      <p>{{ element.melt }}</p>-->
