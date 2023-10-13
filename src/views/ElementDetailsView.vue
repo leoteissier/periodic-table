@@ -1,5 +1,5 @@
 <script>
-import { useElementStore } from '@/stores/index.js';
+import { useElementStore } from '@/stores/index.js'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
@@ -7,75 +7,88 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 export default {
   name: 'ElementDetailsView',
   mounted() {
-    this.loadModel()
+    this.setModel()
   },
   computed: {
     selectedElement() {
       // Récupérer l'élément depuis le localStorage et le parser
-      const storedElement = JSON.parse(localStorage.getItem('selectedElement'));
+      const storedElement = JSON.parse(localStorage.getItem('selectedElement'))
 
       // Vous pouvez également récupérer l'élément du store si vous préférez
-      const elementStore = useElementStore();
-      const selectedElement = elementStore.selectedElement;
+      const elementStore = useElementStore()
+      const selectedElement = elementStore.selectedElement
 
       // Utilisez l'élément du localStorage s'il est défini, sinon utilisez celui du store
-      return storedElement || selectedElement;
+      return storedElement || selectedElement
     },
   },
 
   methods: {
-    loadModel() {
+    setModel(){
       const container = document.getElementById('model-container')
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-      camera.position.z = 5;
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      container.appendChild(renderer.domElement);
+      const scene = new THREE.Scene()
+      const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000)
+      camera.position.z = 5
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+      renderer.setSize(container.clientWidth, container.clientHeight)
+      container.appendChild(renderer.domElement)
 
       const loader = new GLTFLoader()
       loader.load(this.selectedElement.bohr_model_3d, gltf => {
-        const model = gltf.scene;
+        const model = gltf.scene
 
-        // Cherchez l'objet "Armature" dans le modèle
-        const armature = model.getObjectByName('Armature');
+        // Si "Armature" existe, vous pouvez accéder à l'animation à partir de là
+        const animationClip = gltf.animations[0]
+        const mixer = new THREE.AnimationMixer(model)
+        const action = mixer.clipAction(animationClip)
+        action.play()
 
-        if (armature) {
-          // Si "Armature" existe, vous pouvez accéder à l'animation à partir de là
-          const animationClip = armature.animations.find(animation => animation.name === 'Animation');
+        model.scale.set(10, 10, 10)
+        scene.add(model)
 
-          if (animationClip) {
-            const mixer = new THREE.AnimationMixer(armature);
-            const action = mixer.clipAction(animationClip);
-            action.play();
-          }
-        }
+        const light = new THREE.DirectionalLight(0xffffff, 1)
+        light.position.set(1, 1, 1).normalize()
+        scene.add(light)
 
-        model.scale.set(10, 10, 10);
-        scene.add(model);
-
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(1, 1, 1).normalize();
-        scene.add(light);
-
-        model.rotation.x = 0.5; // Appliquer l'inclinaison sur l'axe X
-        renderer.render(scene, camera);
-      });
-
-
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.enableZoom = false // Désactiver le zoom
-      controls.autoRotate = true // Faire tourner le modèle automatiquement
-      controls.autoRotateSpeed = 0.5 // Vitesse de rotation
-      controls.enableDamping = true // Ajouter un amortissement pour un mouvement plus fluide
-
-      function render() {
-        requestAnimationFrame(render)
-        controls.update()
+        model.rotation.x = 0.5 // Appliquer l'inclinaison sur l'axe X
         renderer.render(scene, camera)
-      }
 
-      render()
+        const controls = new OrbitControls(camera, renderer.domElement)
+        controls.enableZoom = false // Désactiver le zoom
+        controls.autoRotate = true // Faire tourner le modèle automatiquement
+        controls.autoRotateSpeed = 0.5 // Vitesse de rotation
+        controls.enableDamping = true // Ajouter un amortissement pour un mouvement plus fluide
+
+        function render() {
+          requestAnimationFrame(render)
+          controls.update()
+          renderer.render(scene, camera)
+        }
+        render()
+
+        const clock = new THREE.Clock()
+
+        this.current = Date.now()
+        this.delta = 16
+
+        const tick = () =>
+        {
+          const currentTime = Date.now()
+          this.delta = currentTime - this.current
+          this.current = currentTime
+
+          // Update animation
+          mixer.update(this.delta * 0.001)// Update controls
+          controls.update()
+
+          // Render
+          renderer.render(scene, camera)
+
+          // Call tick again on the next frame
+          window.requestAnimationFrame(tick)
+        }
+        tick()
+      })
     }
   },
 }
@@ -83,54 +96,42 @@ export default {
 
 <template>
   <div class="more-info">
-<!--    <div>-->
-<!--      <p>{{ element.symbol }}</p>-->
-<!--      <p>{{ element.number }}</p>-->
-<!--      <p>{{ element.atomic_mass }}</p>-->
-<!--      <p>{{ element.category }}</p>-->
-<!--    </div>-->
-<!--    <div>-->
-<!--      <p>{{ element.boil }}</p>-->
-<!--      <p>{{ element.melt }}</p>-->
-<!--      <p>{{ element.density }}</p>-->
-<!--      <p>{{ element.molar_heat }}</p>-->
-<!--    </div>-->
-<!--    <div>-->
-<!--      <p>{{ element.electron_configuration }}</p>-->
-<!--      <p>{{ element.electron_affinity }}</p>-->
-<!--      <p>{{ element.electronegativity_pauling }}</p>-->
-<!--      <p>{{ element.ionization_energies }}</p>-->
-<!--    </div>-->
-<!--    <div>-->
-<!--      <p>{{ element.discovered_by }}</p>-->
-<!--      <p>{{ element.named_by }}</p>-->
-<!--      <p>{{ element.appearance }}</p>-->
-<!--      <p>{{ element.phase }}</p>-->
-<!--    </div>-->
     <div id="model-container"></div>
-<!--    <div>-->
-<!--      <p>{{ element.summary }}</p>-->
-<!--    </div>-->
-<!--    <div>-->
-<!--      <img :src="element.spectral_img" alt="spectral ">-->
-<!--    </div>-->
-    <router-link to="/">Back</router-link>
+    <div id="info">
+      <p>{{ selectedElement.symbol }}</p>
+      <p>{{ selectedElement.number }}</p>
+      <p>{{ selectedElement.atomic_mass }}</p>
+      <p>{{ selectedElement.category }}</p>
+      <router-link to="/">Back</router-link>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .more-info{
-  grid-column: 1/3;
+  grid-column: 1/2;
   grid-row: 1/3;
   display: grid;
-  grid-template-columns: 0.75fr 1fr 0.75fr;
-  grid-template-rows: 0.75fr 1fr 0.75fr;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+  align-items: center;
+  justify-items: center;
 }
 #model-container {
-  grid-column: 2/3;
-  grid-row: 2/3;
+  grid-column: 1/2;
+  grid-row: 1/2;
   display: flex;
   justify-content: center;
-  background-color: transparent;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+#info{
+  grid-column: 2/3;
+  grid-row: 1/2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>

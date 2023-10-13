@@ -179,7 +179,7 @@ export default {
 </script>
 
 <template>
-  <h1 class="title">Periodic Table</h1>
+<!--  <h1 class="title">Periodic Table</h1>-->
   <div v-if="loading">
     Loading...
   </div>
@@ -249,19 +249,19 @@ export default {
 
 <style lang="scss" scoped>
 @import "src/assets/atom.scss";
-$width-height-cell: 85px;
-.title{
-  grid-column: 1/2;
-  grid-row: 1/2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2.5rem;
-}
+$width-height-cell: 70px;
+//.title{
+//  grid-column: 1/2;
+//  grid-row: 1/2;
+//  display: flex;
+//  justify-content: center;
+//  align-items: center;
+//  font-size: 2.5rem;
+//}
 
 .tableau {
   grid-column: 1/2;
-  grid-row: 2/3;
+  grid-row: 1/3;
   display: grid;
   grid-template-rows: repeat(7, 1fr) 25px repeat(2, 1fr);
   grid-template-columns: repeat(18, 1fr);
@@ -287,8 +287,8 @@ $width-height-cell: 85px;
   }
 
   .elements{
-    width: $width-height-cell;
-    height:  $width-height-cell;
+    //width: $width-height-cell;
+    //height:  $width-height-cell;
     display: grid;
     grid-template-rows: 20px 1fr 20px;
     grid-template-columns: 25px 1fr;
@@ -304,7 +304,7 @@ $width-height-cell: 85px;
       grid-column: 1/2;
       grid-row: 1/2;
       margin: 5px 0 0 5px;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       font-weight: bold;
     }
 
@@ -314,17 +314,18 @@ $width-height-cell: 85px;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 1.7rem;
+      font-size: 1.5rem;
       font-weight: bold;
     }
 
-  }
-  .name {
-    grid-column: 1/3;
-    grid-row: 3/4;
-    font-size: 0.8rem;
-    margin: 0 4px;
-    text-align: center;
+    .name {
+      grid-column: 1/3;
+      grid-row: 3/4;
+      font-size: 0.7rem;
+      margin: 0 4px;
+      text-align: center;
+    }
+
   }
   .information{
     grid-column: 3/13;
@@ -380,8 +381,8 @@ $width-height-cell: 85px;
   .tab-57-71{
     grid-column: 3/4;
     grid-row: 6/7;
-    width: $width-height-cell;
-    height: $width-height-cell;
+    //width: $width-height-cell;
+    //height: $width-height-cell;
     background-color: #453F60;
     display: flex;
     flex-direction: column;
@@ -393,8 +394,8 @@ $width-height-cell: 85px;
   .tab-89-103{
     grid-column: 3/4;
     grid-row: 7/8;
-    width: $width-height-cell;
-    height: $width-height-cell;
+    //width: $width-height-cell;
+    //height: $width-height-cell;
     background-color: #3B2E48;
     display: flex;
     flex-direction: column;
@@ -415,6 +416,29 @@ $width-height-cell: 85px;
       font-size: 16px;
       writing-mode: vertical-rl;
       cursor: pointer;
+    }
+
+  }
+}
+
+@media screen and (max-width: 1920px){
+  .elements{
+
+    .number {
+      margin: 5px 0 0 5px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    .symbol {
+      font-size: 1.7rem;
+      font-weight: bold;
+    }
+
+    .name {
+      font-size: 0.9rem;
+      margin: 0 4px;
+      text-align: center;
     }
 
   }

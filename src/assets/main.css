@@ -47,3 +47,7 @@ h1,h2,.name{
     overflow: hidden;
     text-overflow: ellipsis;
 }
+#model-container canvas {
+    width: 40vw!important;
+    height: 40vw!important;
+}
