@@ -29,6 +29,7 @@ export default {
       const scene = new THREE.Scene()
       const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000)
       camera.position.z = 5
+      camera.position.set(7.5, 0, 0)
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
       renderer.setSize(container.clientWidth, container.clientHeight)
       container.appendChild(renderer.domElement)
@@ -56,7 +57,7 @@ export default {
         const controls = new OrbitControls(camera, renderer.domElement)
         controls.enableZoom = false // Désactiver le zoom
         controls.autoRotate = true // Faire tourner le modèle automatiquement
-        controls.autoRotateSpeed = 0.5 // Vitesse de rotation
+        controls.autoRotateSpeed = 0.25 // Vitesse de rotation
         controls.enableDamping = true // Ajouter un amortissement pour un mouvement plus fluide
 
         function render() {
@@ -97,13 +98,6 @@ export default {
 <template>
   <div class="more-info">
     <div id="model-container"></div>
-    <div id="info">
-      <p>{{ selectedElement.symbol }}</p>
-      <p>{{ selectedElement.number }}</p>
-      <p>{{ selectedElement.atomic_mass }}</p>
-      <p>{{ selectedElement.category }}</p>
-      <router-link to="/">Back</router-link>
-    </div>
   </div>
 </template>
 
@@ -111,27 +105,15 @@ export default {
 .more-info{
   grid-column: 1/2;
   grid-row: 1/3;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 1rem;
-  align-items: center;
-  justify-items: center;
-}
-#model-container {
-  grid-column: 1/2;
-  grid-row: 1/2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 100%;
   height: 100%;
-}
-#info{
-  grid-column: 2/3;
-  grid-row: 1/2;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+#model-container{
+  width: 100%;
+  height: 100%;
 }
 </style>

@@ -48,6 +48,6 @@ h1,h2,.name{
     text-overflow: ellipsis;
 }
 #model-container canvas {
-    width: 40vw!important;
-    height: 40vw!important;
+    width: 100%!important;
+    height: 100%!important;
 }
