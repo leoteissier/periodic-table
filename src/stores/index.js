@@ -9,7 +9,7 @@ export const useElementStore = defineStore({
   }),
   actions: {
     async fetchElements() {
-      const response = await fetch('/src/periodic-table.json');
+      const response = await fetch('/periodic-table.json');
       const data = await response.json();
       this.elements = data.elements;
       this.loading = false;
