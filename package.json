@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "gsap": "^3.12.1",
+    "gsap": "^3.12.2",
     "pinia": "^2.0.36",
     "three": "^0.153.0",
     "vue": "^3.3.2",
